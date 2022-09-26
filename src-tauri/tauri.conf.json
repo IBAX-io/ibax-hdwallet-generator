@@ -7,7 +7,7 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "IBAX-HDWallet-Generator",
+    "productName": "IBAX HDWallet Generator",
     "version": "0.0.1"
   },
   "tauri": {
@@ -58,7 +58,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "IBAX-HDWallet-Generator",
+        "title": "IBAX HDWallet Generator",
         "width": 1200,
         "center": true,
         "minWidth": 1200,
