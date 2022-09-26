@@ -30,6 +30,7 @@ export default ({ mode, command }) => {
     components: path.resolve(__dirname, './src/components')
   };
   return defineConfig({
+    base: './',
     optimizeDeps: {
       include: optimizeDepsElementPlusIncludes
     },
@@ -66,6 +67,12 @@ export default ({ mode, command }) => {
       // don't minify for debug builds
       minify: !boo ? 'esbuild' : false,
       // produce sourcemaps for debug builds
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true
+        }
+      },
       sourcemap: boo,
       assetsDir: 'static',
       chunkSizeWarningLimit: 1500,

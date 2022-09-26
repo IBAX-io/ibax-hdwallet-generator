@@ -99,7 +99,7 @@ const handleGenerateWords = () => {
       <el-row justify="center">
         <el-col :lg="21" :md="22" :ml="23">
           <div class="app">
-            <h1 class="app-h1">Mnemonic Code Converter</h1>
+            <h1 class="app-h1">IBAX HDWallet Generator</h1>
             <div class="app-mnemonic">
               <div class="app-mnemonic-box">
                 <span class="app-mnemonic-box-label">Mnemonic</span>
