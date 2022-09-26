@@ -17,6 +17,7 @@ interface interItem {
 const wordsNum = handleWordsNum();
 const num = ref('12');
 const len = ref(128);
+const loading = ref(false);
 const textarea = ref('');
 const tableData = reactive({ arr: [] as interItem[] });
 const handleCommand = (command: string | number | object) => {
@@ -62,6 +63,7 @@ const handleGenerate = async (index: number) => {
       i += 1;
       handleGenerate(i);
     } else {
+      loading.value = false;
       i = 0;
       return false;
     }
@@ -77,20 +79,28 @@ const handleTextarea = () => {
   if (textarea.value) {
     tableData.arr = [];
     arr = [];
+    loading.value = true;
     setTimeout(() => {
       handleGenerate(0);
     }, 500);
+  } else {
+    loading.value = false;
+    ElMessage({
+      showClose: true,
+      message: `Mnemonic cannot be empty`,
+      type: 'warning'
+    });
   }
 };
 const handleGenerateWords = () => {
   textarea.value = keyring.generateSeed(len.value);
-  if (textarea.value) {
+  /* if (textarea.value) {
     tableData.arr = [];
     arr = [];
     setTimeout(() => {
       handleGenerate(0);
     }, 500);
-  }
+  } */
 };
 </script>
 
@@ -103,9 +113,9 @@ const handleGenerateWords = () => {
             <h1 class="app-h1">IBAX HDWallet Generator</h1>
             <div class="app-mnemonic">
               <div class="app-mnemonic-box">
-                <span class="app-mnemonic-box-label">Mnemonic</span>
-                <div class="app-mnemonic-box-content">
-                  <div class="app-mnemonic-box-content-des">
+                <span class="app-mnemonic-box-label">BIP39 mnemonics</span>
+                <div class="app-mnemonic-box-content app-mnemonic-layout">
+                  <!--   <div class="app-mnemonic-box-content-des">
                     <span>
                       You can enter an existing BIP39 mnemonic, or generate a
                       new random mnemonic. It is not feasible to input 12 words
@@ -118,38 +128,36 @@ const handleGenerateWords = () => {
                     >
                       BIP39 spec.
                     </a>
-                  </div>
-                  <div class="app-mnemonic-box-content-des app-mnemonic-layout">
-                    <span>Generate random mnemonics:</span>
-                    <el-dropdown @command="handleCommand">
-                      <el-input
-                        v-model="num"
-                        placeholder="Pick a date"
-                        :suffix-icon="ArrowDown"
-                      />
-                      <template #dropdown>
-                        <el-dropdown-menu
-                          v-for="item in wordsNum"
-                          :key="item.label"
-                        >
-                          <el-dropdown-item :command="item.command">
-                            {{ item.label }}
-                          </el-dropdown-item>
-                        </el-dropdown-menu>
-                      </template>
-                    </el-dropdown>
-                    <el-button
-                      type="primary"
-                      class="app-mnemonic-layout-btn"
-                      @click="handleGenerateWords"
-                    >
-                      Generate
-                    </el-button>
-                  </div>
+                  </div> -->
+
+                  <el-dropdown @command="handleCommand">
+                    <el-input
+                      v-model="num"
+                      placeholder="Pick a date"
+                      :suffix-icon="ArrowDown"
+                    />
+                    <template #dropdown>
+                      <el-dropdown-menu
+                        v-for="item in wordsNum"
+                        :key="item.label"
+                      >
+                        <el-dropdown-item :command="item.command">
+                          {{ item.label }}
+                        </el-dropdown-item>
+                      </el-dropdown-menu>
+                    </template>
+                  </el-dropdown>
+                  <el-button
+                    type="primary"
+                    class="app-mnemonic-layout-btn"
+                    @click="handleGenerateWords"
+                  >
+                    Generate
+                  </el-button>
                 </div>
               </div>
               <div class="app-mnemonic-box">
-                <span class="app-mnemonic-box-label">BIP39 Mnemonics</span>
+                <span class="app-mnemonic-box-label">Mnemonics</span>
                 <div class="app-mnemonic-box-content">
                   <el-input
                     v-model="textarea"
@@ -157,14 +165,27 @@ const handleGenerateWords = () => {
                     type="textarea"
                     rows="3"
                     clearable
-                    @blur="handleTextarea"
                   />
+                </div>
+              </div>
+              <div class="app-mnemonic-box">
+                <span class="app-mnemonic-box-label"></span>
+                <div class="app-mnemonic-box-content">
+                  <el-button type="primary" @click="handleTextarea">
+                    Create
+                  </el-button>
                 </div>
               </div>
             </div>
             <h2 class="app-table-title">Derived Address</h2>
             <div class="app-table">
-              <el-table :data="tableData.arr" stripe style="width: 100%">
+              <el-table
+                v-loading="loading"
+                :data="tableData.arr"
+                height="500"
+                stripe
+                style="width: 100%"
+              >
                 <el-table-column prop="path" label="Path" width="120" />
                 <el-table-column label="Private Key" show-overflow-tooltip>
                   <template #default="scope">

@@ -5,6 +5,7 @@ import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
 import fs from 'fs';
+import removeConsole from 'vite-plugin-remove-console';
 
 const optimizeDepsElementPlusIncludes = ['element-plus/es'];
 fs.readdirSync('node_modules/element-plus/es/components').forEach((dirname) => {
@@ -36,6 +37,7 @@ export default ({ mode, command }) => {
     },
     plugins: [
       vue(),
+      command === 'build' ? removeConsole() : '',
       AutoImport({
         resolvers: [ElementPlusResolver()]
       }),
@@ -67,18 +69,18 @@ export default ({ mode, command }) => {
       // don't minify for debug builds
       minify: !boo ? 'esbuild' : false,
       // produce sourcemaps for debug builds
-      terserOptions: {
+      /* terserOptions: {
         compress: {
           drop_console: true,
           drop_debugger: true
         }
-      },
+      }, */
       sourcemap: boo,
       assetsDir: 'static',
       chunkSizeWarningLimit: 1500,
-      esbuild: {
+      /*  esbuild: {
         drop: ['console', 'debugger']
-      },
+      }, */
       rollupOptions: {
         output: {
           manualChunks(id) {
