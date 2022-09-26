@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --mode dev",
-    "build": "vue-tsc --noEmit && vite build  --mode prod",
+    "build": "vite build  --mode prod",
     "preview": "vite preview",
     "tauri": "tauri"
   },
