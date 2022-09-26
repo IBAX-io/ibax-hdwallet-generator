@@ -28,20 +28,17 @@ const handleCommand = (command: string | number | object) => {
 let i = 0;
 let arr: interItem[] = [];
 const handlePrivate = (value: string, index: number) => {
-  const priavteKey = keyring.generatePriavte(value, index);
+  const privateKey = keyring.generatePriavte(value, index);
   return new Promise((resolve, reject) => {
-    if (priavteKey) {
+    if (privateKey) {
+      const publicKey = keccak256.generatePublicKey(privateKey);
       const obj = {
         id: index,
         path: `m/44'/60'/0'/0/${index}`,
-        privateKey: keyring.generatePriavte(value, index),
-        publicKey: keccak256.generatePublicKey(
-          keyring.generatePriavte(value, index)
-        ),
-        ethAddress: keyring.ethAddress(keyring.generatePriavte(value, index)),
-        ibaxAddress: keccak256.generateAddres(
-          keccak256.generatePublicKey(keyring.generatePriavte(value, index))
-        )
+        privateKey,
+        publicKey,
+        ethAddress: keyring.ethAddress(privateKey),
+        ibaxAddress: keccak256.generateAddres(publicKey)
       };
       resolve(obj);
     } else {
@@ -52,9 +49,9 @@ const handlePrivate = (value: string, index: number) => {
 };
 const handleGenerate = async (index: number) => {
   const { value } = textarea;
-  const boo = keyring.verifyWords(value);
-  console.log(boo);
-  if (boo) {
+  // const boo = keyring.verifyWords(value);
+  // console.log(boo);
+  if (value) {
     if (i <= 10) {
       // tableData.arr = [];
       const obj = (await handlePrivate(value, index)) as any;
@@ -80,7 +77,9 @@ const handleTextarea = () => {
   if (textarea.value) {
     tableData.arr = [];
     arr = [];
-    handleGenerate(0);
+    setTimeout(() => {
+      handleGenerate(0);
+    }, 500);
   }
 };
 const handleGenerateWords = () => {
@@ -88,7 +87,9 @@ const handleGenerateWords = () => {
   if (textarea.value) {
     tableData.arr = [];
     arr = [];
-    handleGenerate(0);
+    setTimeout(() => {
+      handleGenerate(0);
+    }, 500);
   }
 };
 </script>
@@ -156,7 +157,7 @@ const handleGenerateWords = () => {
                     type="textarea"
                     rows="3"
                     clearable
-                    @input="handleTextarea"
+                    @blur="handleTextarea"
                   />
                 </div>
               </div>

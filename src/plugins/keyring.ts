@@ -12,8 +12,8 @@ export default {
   verifyWords(words: string) {
     return bip39.validateMnemonic(words, wordlist);
   },
-  generatePriavte: (seed: string, num: number = 0) => {
-    const masterNode = utils.HDNode.fromMnemonic(seed);
+  generatePriavte: (words: string, num: number = 0) => {
+    const masterNode = utils.HDNode.fromSeed(utils.mnemonicToSeed(words));
     const standardEthereum = masterNode.derivePath(`m/44'/60'/0'/0/${num}`);
     const privateHex = standardEthereum.privateKey.replace('0x', '');
     return privateHex;
