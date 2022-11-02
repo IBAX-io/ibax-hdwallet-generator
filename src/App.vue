@@ -33,13 +33,16 @@ const handlePrivate = (value: string, index: number) => {
   return new Promise((resolve, reject) => {
     if (privateKey) {
       const publicKey = keccak256.generatePublicKey(privateKey);
+      const keyID = keccak256.publicToID(publicKey);
+      const address = keccak256.addressString(keyID);
       const obj = {
         id: index,
         path: `m/44'/60'/0'/0/${index}`,
         privateKey,
         publicKey,
         ethAddress: keyring.ethAddress(privateKey),
-        ibaxAddress: keccak256.generateAddres(publicKey)
+        ibaxAddress: address,
+        ibaxKeyID: keyID
       };
       resolve(obj);
     } else {
@@ -131,27 +134,16 @@ const handleGenerateWords = () => {
                   </div> -->
 
                   <el-dropdown @command="handleCommand">
-                    <el-input
-                      v-model="num"
-                      placeholder="Pick a date"
-                      :suffix-icon="ArrowDown"
-                    />
+                    <el-input v-model="num" placeholder="Pick a date" :suffix-icon="ArrowDown" />
                     <template #dropdown>
-                      <el-dropdown-menu
-                        v-for="item in wordsNum"
-                        :key="item.label"
-                      >
+                      <el-dropdown-menu v-for="item in wordsNum" :key="item.label">
                         <el-dropdown-item :command="item.command">
                           {{ item.label }}
                         </el-dropdown-item>
                       </el-dropdown-menu>
                     </template>
                   </el-dropdown>
-                  <el-button
-                    type="primary"
-                    class="app-mnemonic-layout-btn"
-                    @click="handleGenerateWords"
-                  >
+                  <el-button type="primary" class="app-mnemonic-layout-btn" @click="handleGenerateWords">
                     Generate
                   </el-button>
                 </div>
@@ -159,13 +151,7 @@ const handleGenerateWords = () => {
               <div class="app-mnemonic-box">
                 <span class="app-mnemonic-box-label">Mnemonics</span>
                 <div class="app-mnemonic-box-content">
-                  <el-input
-                    v-model="textarea"
-                    placeholder="Please mnemonic"
-                    type="textarea"
-                    rows="3"
-                    clearable
-                  />
+                  <el-input v-model="textarea" placeholder="Please mnemonic" type="textarea" rows="3" clearable />
                 </div>
               </div>
               <div class="app-mnemonic-box">
@@ -179,43 +165,40 @@ const handleGenerateWords = () => {
             </div>
             <h2 class="app-table-title">Derived Address</h2>
             <div class="app-table">
-              <el-table
-                v-loading="loading"
-                :data="tableData.arr"
-                height="500"
-                stripe
-                style="width: 100%"
-              >
+              <el-table v-loading="loading" :data="tableData.arr" height="500" stripe style="width: 100%">
                 <el-table-column prop="path" label="Path" width="120" />
-                <el-table-column label="Private Key" show-overflow-tooltip>
+                <el-table-column label="Private Key" show-overflow-tooltip width="450">
                   <template #default="scope">
                     <span>
                       {{ scope.row.privateKey }}
                     </span>
                   </template>
                 </el-table-column>
-                <el-table-column label="Public Key" show-overflow-tooltip>
+                <el-table-column label="IBAX Address" show-overflow-tooltip width="180">
                   <template #default="scope">
                     <span>
-                      {{ scope.row.publicKey }}
+                      {{ scope.row.ibaxAddress }}
                     </span>
                   </template>
                 </el-table-column>
-                <el-table-column label="ETH Address" show-overflow-tooltip>
+                <el-table-column label="ETH Address" show-overflow-tooltip width="320">
                   <template #default="scope">
                     <span>
                       {{ scope.row.ethAddress }}
                     </span>
                   </template>
                 </el-table-column>
-                <el-table-column
-                  label="IBAX Address"
-                  show-overflow-tooltip
-                  width="180"
-                >
+                <el-table-column label="IBAX KeyID" show-overflow-tooltip width="160">
                   <template #default="scope">
                     <span>
-                      {{ scope.row.ibaxAddress }}
+                      {{ scope.row.ibaxKeyID }}
+                    </span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="Public Key" show-overflow-tooltip width="880">
+                  <template #default="scope">
+                    <span>
+                      {{ scope.row.publicKey }}
                     </span>
                   </template>
                 </el-table-column>
